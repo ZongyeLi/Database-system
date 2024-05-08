@@ -1,2 +1,2 @@
 # Database-system
-Library system design base on Oracle SQL
+Library system designed base on Oracle SQL
