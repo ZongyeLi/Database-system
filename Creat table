@@ -1,0 +1,290 @@
+DROP TABLE Memb;
+CREATE TABLE Memb(
+MemberID number(4) not null,
+Avalible_Quantity int,
+Status varchar2(10),
+CONSTRAINT PK_Memb PRIMARY KEY(MemberID)
+);
+
+DROP TABLE Student;
+CREATE TABLE Student(
+StuID number(4) not null,
+MemberID number(4) not null,
+StuName varchar2(10),
+Sex varchar2(9),
+Date_of_Birth date,
+Major varchar2(20),
+School varchar2(20),
+CONSTRAINT PK_Student PRIMARY KEY(StuID),
+CONSTRAINT FK_Student_MemberID FOREIGN KEY(MemberID) REFERENCES Memb ON DELETE CASCADE
+);
+
+DROP TABLE Staff;
+CREATE TABLE Staff(
+StaID number(4) not null ,
+MemberID number(4) not null,
+StaName varchar2(10),
+Sex varchar2(9),
+Date_of_Birth date,
+CONSTRAINT PK_Staff PRIMARY KEY(StaID),
+CONSTRAINT FK_Staff_MemberID FOREIGN KEY(MemberID) REFERENCES Memb ON DELETE CASCADE
+);
+
+DROP TABLE ResoClass;
+CREATE TABLE ResoClass(
+ClassID number(4) not null,
+ClassName varchar2(10) not null,
+CONSTRAINT PK_Class PRIMARY KEY (ClassID)
+);
+
+DROP TABLE Reso;
+CREATE TABLE Reso(
+ResourceID number(4) not null,
+ClassID number(4) not null,
+ResourceName varchar2(20) not null,
+Author varchar2(20),
+Types varchar2(10),
+AvalibleTime int,
+ShelfNumber number(4),
+FloorNumber number(4),
+amount int,
+Popularity varchar2(20),
+CONSTRAINT PK_Reso PRIMARY KEY(ResourceID),
+CONSTRAINT FK_Reso_ClassID FOREIGN KEY(ClassID) REFERENCES ResoClass
+);
+
+DROP TABLE Reservation;
+CREATE TABLE Reservation(
+ROrderID number(4) not null,
+MemberID number(4) not null,
+ResourceID number(4) not null,
+RStatus varchar2(20),
+StartDate date,
+Enddate date,
+counts int,
+CONSTRAINT PK_Reservation PRIMARY KEY(ROrderID),
+CONSTRAINT FK_Reservation_MemberID FOREIGN KEY(MemberID) REFERENCES Memb,
+CONSTRAINT FK_Reservation_ResourceID FOREIGN KEY(ResourceID) REFERENCES Reso
+);
+
+DROP TABLE Borrow;
+CREATE TABLE Borrow(
+MemberID number(4) not null,
+ResourceID number(4) not null,
+BStatus varchar2(10) not null,
+StartDate date not null,
+ReturnDate date,
+CONSTRAINT PK_Borrow PRIMARY KEY(MemberID, ResourceID,StartDate),
+CONSTRAINT FK_Borrow_MemberID FOREIGN KEY (MemberID) REFERENCES Memb,
+CONSTRAINT FK_Borrow_ResourceID FOREIGN KEY (ResourceID) REFERENCES Reso
+);
+
+
+DROP TABLE Copy;
+CREATE TABLE Copy(
+CopyID number(4) not null,
+ResourceID number(4) not null,
+CONSTRAINT PK_Copy PRIMARY KEY(CopyID,ResourceID ),
+CONSTRAINT FK_Copy_ResourceID FOREIGN KEY (ResourceID) References Reso
+);
+
+
+DROP TABLE Loan;
+CREATE TABLE Loan(
+LoanID number(4) not null ,
+MemberID number(4) not null,
+CopyID number(4) not null,
+ResourceID number(4) not null,
+LAmount int,
+LStatus varchar2(10) not null, 
+CONSTRAINT PK_Loan PRIMARY KEY(LoanID),
+CONSTRAINT FK_Loan_MemberID FOREIGN KEY (MemberID) REFERENCES Memb,
+CONSTRAINT FK_Loan_CopyID_ResourceID FOREIGN KEY (CopyID,ResourceID) REFERENCES Copy
+);
+
+#Data of Memb
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (1001,5,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (1002,5,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (1003,5,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (1004,5,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (1005,5,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (2001,10,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (2002,10,'Avalible');
+INSERT INTO Memb (MemberID,Avalible_Quantity,Status)
+VALUES (2003,10,'Avalible');
+
+#Data of Student
+INSERT INTO Student (StuID,MemberID,StuName,Sex,Date_of_Birth,Major,School) VALUES(0001,1001,'Cici','Female',to_date('1999-12-22','yyyy-mm-dd'),'Computer Science','EECS');
+
+INSERT INTO Student (StuID,MemberID,StuName,Sex,Date_of_Birth,Major,School) VALUES (0002,1002,'Nan Xia','Male',to_date('1999-03-22','yyyy-mm-dd'),'Computer Science','EECS');
+
+INSERT INTO Student (StuID,MemberID,StuName,Sex,Date_of_Birth,Major,School) VALUES (0003,1003,'Lily King','Female',to_date('1999-03-25','yyyy-mm-dd'),'Computer Science','EECS');
+
+INSERT INTO Student (StuID,MemberID,StuName,Sex,Date_of_Birth,Major,School) VALUES (0004,1004,'Sammy L','Female',to_date('1995-04-25','yyyy-mm-dd'),'AI','EECS');
+
+INSERT INTO Student (StuID,MemberID,StuName,Sex,Date_of_Birth,Major,School) VALUES (0005,1005,'Allu Babah','Female',to_date('1996-08-19','yyyy-mm-dd'),'Big Date Science','EECS');
+#Data of Staff
+INSERT INTO Staff (StaID,MemberID,StaName,Sex,Date_of_Birth) VALUES (0001,2001,'Zoey Lee','Female',to_date('1990-03-25','yyyy-mm-dd'));
+
+INSERT INTO Staff (StaID,MemberID,StaName,Sex,Date_of_Birth) VALUES (0002,2002,'July Lee','Female',to_date('1988-03-25','yyyy-mm-dd'));
+
+INSERT INTO Staff (StaID,MemberID,StaName,Sex,Date_of_Birth) VALUES (0003,2003,'Peter Lee','Male',to_date('1988-03-25','yyyy-mm-dd'));
+
+#Data of ResoClass
+
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0001,'Novel');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0002,'CS');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0003,'Psychology');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0004,'Recipe');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0005,'Animal');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0006,'Plant');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0007,'Memoir');
+INSERT INTO ResoClass (ClassID,ClassName) VALUES (0008,'Geography');
+
+#Data of Resource
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1111,0001,'Life Of Art','Zongye Li','Book',10,1,14,2,'Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1112,0002,'SQL','Yuhan Gao','DVD',11,2,2,2,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1113,0003,'Smart life','Yu Gao','CD',15,2,2,3,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1114,0002,'Python','Peter S','Video',15,2,2,2,'Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1115,0004,'Chinese food','Peter S',' Book',17,3,14,2,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1116,0005,'Pets','Peter S','Book',17,3,14,3,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1117,0006,'Flowers','Zoe Lee','Book',17,3,14,2,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1118,0007,'Qeens','Zoe Lee','Book',22,3,14,2,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1119,0008,'Palace','Zoe Lee','Book',22,3,14,2,'Non-Popular');
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1120,0003,'Life','Zoe Lee','Book',22,3,14,2,'Non-Popular');	
+
+INSERT INTO Reso (ResourceID,ClassID,ResourceName,Author,Types,ShelfNumber,FloorNumber,AvalibleTime,amount,Popularity) VALUES(1121,0001,'Sleeping','Zoe Lee','Book',22,3,14,0,'Non-Popular');
+
+#Data of Copy
+
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1111);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1111);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1111);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(04,1111);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1112);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1112);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1113);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1113);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1113);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(04,1113);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1114);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1114);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1114);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(04,1114);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1115);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1115);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1115);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(04,1115);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(05,1115);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1116);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1116);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1116);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(04,1116);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1117);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1117);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1117);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1118);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1118);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1118);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1119);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1119);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1119);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1120);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(02,1120);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(03,1120);
+INSERT INTO Copy (CopyID,ResourceID) VALUES(01,1121);
+
+
+#Data of Borrow
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1001,1111,'Returned',TO_DATE('20220801','yyyymmdd'),TO_DATE('20220807','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1005,1111,'Returned',TO_DATE('20220801','yyyymmdd'),TO_DATE('20220804','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1005,1114,'Returned',TO_DATE('20220803','yyyymmdd'),TO_DATE('20220805','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1005,1111,'Returned',TO_DATE('20220804','yyyymmdd'),TO_DATE('20220815','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1120,'Returned',TO_DATE('20220917','yyyymmdd'),TO_DATE('20220929','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1002,1111,'Returned',TO_DATE('20220926','yyyymmdd'),TO_DATE('20220928','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1004,1111,'Returned',TO_DATE('20221002','yyyymmdd'),TO_DATE('20221004','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1003,1114,'Returned',TO_DATE('20221002','yyyymmdd'),TO_DATE('20221008','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2002,1114,'Returned',TO_DATE('20221010','yyyymmdd'),TO_DATE('20221011','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1003,1116,'Returned',TO_DATE('20221011','yyyymmdd'),TO_DATE('20221023','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1001,1114,'Returned',TO_DATE('20221101','yyyymmdd'),TO_DATE('20221102','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1114,'Returned',TO_DATE('20221109','yyyymmdd'),TO_DATE('20221110','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2002,1121,'Returned',TO_DATE('20221130','yyyymmdd'),TO_DATE('20221202','yyyymmdd'));
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2002,1121,'Borrowing',TO_DATE('20221206','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1002,1113,'Overdue',TO_DATE('20221206','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1003,1115,'Overdue',TO_DATE('20221207','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2002,1113,'Overdue',TO_DATE('20221207','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1111,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1112,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1113,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1114,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1115,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1116,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1117,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1118,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1119,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (2001,1120,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1004,1111,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1004,1112,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1004,1113,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1004,1114,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+INSERT INTO Borrow (MemberID,ResourceID,BStatus,StartDate,ReturnDate) VALUES (1004,1115,'Borrowing',TO_DATE('20221208','yyyymmdd'),NULL);
+
+
+#Data of Reservation
+
+INSERT INTO Reservation (ROrderID,MemberID,ResourceID,RStatus,StartDate,EndDate,counts) VALUES (0001,1005,1111,'Obtained',TO_DATE('20220802','yyyymmdd'),TO_DATE('20220804','yyyymmdd'),3);
+INSERT INTO Reservation (ROrderID,MemberID,ResourceID,RStatus,StartDate,EndDate,counts) VALUES (0002,1004,1121,'Unaccepted',TO_DATE('20221201','yyyymmdd'),NULL,3);
+
+INSERT INTO Reservation (ROrderID,MemberID,ResourceID,RStatus,StartDate,EndDate,counts) VALUES (0003,2003,1121,'Unaccepted',TO_DATE('20221202','yyyymmdd'),NULL,3);
+
+#Data of Loan
+INSERT INTO Loan(LoanID,MemberID,CopyID,ResourceID,LAmount,LStatus) VALUES (0001,1003,02,1114,4,'Unpaid');
+INSERT INTO Loan(LoanID,MemberID,CopyID,ResourceID,LAmount,LStatus) VALUES (0002,1002,01,1113,3,'Paid');
+INSERT INTO Loan(LoanID,MemberID,CopyID,ResourceID,LAmount,LStatus) VALUES (0003,2002,03,1113,3,'Unpaid');
